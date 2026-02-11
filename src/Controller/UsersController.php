@@ -63,7 +63,7 @@ class UsersController extends AppController
     }
 
     /**
-     * Add method
+     * Registro de usuario
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
@@ -135,6 +135,10 @@ class UsersController extends AppController
         $this->Authentication->addUnauthenticatedActions(['login', 'register']);
     }
 
+    /** 
+     * Iniciar sesion
+    */
+
     public function login()
     {
         $this->request->allowMethod(['get', 'post']);
@@ -155,7 +159,9 @@ class UsersController extends AppController
         }
     }
 
-    // in src/Controller/UsersController.php
+    /**
+     * Cerrar sesion
+     */
     public function logout()
     {
         $result = $this->Authentication->getResult();
