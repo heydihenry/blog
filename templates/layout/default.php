@@ -46,6 +46,27 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 '/',
                 ['class' => 'navbar-brand']
             ) ?>
+            <div class="d-flex">
+                <?php $user = $this->request->getAttribute('identity'); ?>
+                <?php if ($user): ?>
+                    <?= $this->Html->link(
+                        '<i class="bi bi-box-arrow-right"></i> Cerrar Sesión',
+                        ['controller' => 'Users', 'action' => 'logout'],
+                        ['class' => 'btn btn-outline-light', 'escape' => false]
+                    ) ?>
+                <?php else: ?>
+                    <?= $this->Html->link(
+                        '<i class="bi bi-person-plus"></i> Registro',
+                        ['controller' => 'Users', 'action' => 'register'],
+                        ['class' => 'btn btn-outline-light me-2', 'escape' => false]
+                    ) ?>
+                    <?= $this->Html->link(
+                        '<i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión',
+                        ['controller' => 'Users', 'action' => 'login'],
+                        ['class' => 'btn btn-light', 'escape' => false]
+                    ) ?>
+                <?php endif; ?>
+            </div>
         </div>
     </nav>
 

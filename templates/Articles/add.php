@@ -34,11 +34,13 @@
                     
                     <!-- Categoría -->
                     <div class="mb-3">
-                        <?= $this->Form->control('category', [
+                        <?= $this->Form->control('category_id', [
                             'label' => 'Categoría',
-                            'class' => 'form-control',
-                            'placeholder' => 'Ej: Tecnología, Viajes, Recetas...',
-                            'required' => true
+                            'type' => 'select',
+                            'options' => $categorys,
+                            'class' => 'form-select',
+                            'required' => true,
+                            'empty' => '-- Selecciona una categoría --'
                         ]) ?>
                     </div>
                     

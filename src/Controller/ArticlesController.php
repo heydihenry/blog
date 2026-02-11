@@ -11,6 +11,12 @@ namespace App\Controller;
  */
 class ArticlesController extends AppController
 {
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        $this->Authentication->addUnauthenticatedActions(['index', 'view']);
+    }
+
     /**
      * Index method
      *
@@ -56,7 +62,8 @@ class ArticlesController extends AppController
             }
             $this->Flash->error(__('The article could not be saved. Please, try again.'));
         }
-        $this->set(compact('article'));
+        $categorys = $this->Articles->Categorys->find('list', ['keyField'=>'id', 'valueField'=>'name']);
+        $this->set(compact('article', 'categorys'));
     }
 
     /**
@@ -80,7 +87,8 @@ class ArticlesController extends AppController
             }
             $this->Flash->error(__('The article could not be saved. Please, try again.'));
         }
-        $this->set(compact('article'));
+        $categorys = $this->Articles->Categorys->find('list', ['keyField'=>'id', 'valueField'=>'name']);
+        $this->set(compact('article', 'categorys'));
     }
 
     /**
