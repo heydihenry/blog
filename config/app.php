@@ -296,6 +296,11 @@ return [
             'className' => Connection::class,
             'driver' => Mysql::class,
             'persistent' => false,
+            'host' => 'localhost',
+            'username' => 'root',
+            'password' => '',
+            'database' => 'cake_blog',
+            'encoding' => 'utf8',
             'timezone' => 'UTC',
 
             /*
