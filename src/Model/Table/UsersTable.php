@@ -25,6 +25,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
  * @method \App\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  *
+ * @property \App\Model\Table\ArticlesTable&\Cake\ORM\Association\HasMany $Articles
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class UsersTable extends Table
@@ -42,6 +43,13 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        // relación con artículos escrita por el usuario
+        $this->hasMany('Articles', [
+            'foreignKey' => 'user_id',
+            'dependent' => true,      // eliminar artículos al borrar usuario si se desea
+            'cascadeCallbacks' => true
+        ]);
 
         $this->addBehavior('Timestamp');
     }

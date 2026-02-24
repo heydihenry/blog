@@ -45,8 +45,9 @@ class ArticlesTable extends Table
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Categorys', [
-            'foreignKey' => 'category_id',
+        $this->belongsTo('Categorys', [ //No se si este era o no el cambio correcto
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER',
         ]);
 
         $this->addBehavior('Timestamp');

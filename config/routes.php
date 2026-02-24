@@ -55,8 +55,10 @@ return function (RouteBuilder $routes): void {
          * its action called 'display', and we pass a param to select the view file
          * to use (in this case, templates/Pages/home.php)...
          */
+        //Variacion de la ubicacion del endpoint index en el llamado
         $builder->connect('/', ['controller' => 'Articles', 'action' => 'index']);
-
+        //Variacion de la ubicacion del endpoint myArticles en el llamado
+        $builder->connect('/articles/my', ['controller' => 'Articles', 'action' => 'myArticles']);
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */

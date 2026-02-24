@@ -39,7 +39,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 </head>
 <body>
     <!-- Navbar simple -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 pb-10">
         <div class="container">
             <?= $this->Html->link(
                 'Mi Blog',
@@ -76,15 +76,15 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('content') ?>
     </main>
 
-    <!-- Footer -->
-    <footer class="mt-5 py-3 bg-light text-center">
+    <!-- Footer: comentado para eliminarlo temporalmente -->
+    <!--footer class="mt-5 py-3 bg-light text-center">
         <div class="container">
             <p class="text-muted mb-0">Mi Blog &copy; <?= date('Y') ?></p>
         </div>
-    </footer>
+    </footer -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <?= $this->fetch('script') ?>
+    <!-- <?= $this->fetch('script') ?> -->
 </body>
 </html>

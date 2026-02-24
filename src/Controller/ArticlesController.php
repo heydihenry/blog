@@ -30,6 +30,28 @@ class ArticlesController extends AppController
     }
 
     /**
+     * MyArticles method - Get articles for authenticated user
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function myArticles()
+    {
+        // Get authenticated user identity
+        $identity = $this->request->getAttribute('identity');
+        
+        // If no user is logged in, redirect to login
+        if (!$identity) {
+            $this->Flash->error(__('You must be logged in to view your articles.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+
+        // Get articles where user_id matches the authenticated user's id
+        $articles = $this->paginate($this->Articles->find('all', ['contain' => ['Categorys']])->where(['user_id' => $identity->get('id')]));
+
+        $this->set(compact('articles'));
+    }
+
+    /**
      * View method
      *
      * @param string|null $id Article id.
@@ -54,6 +76,12 @@ class ArticlesController extends AppController
     {
         $article = $this->Articles->newEmptyEntity();
         if ($this->request->is('post')) {
+            // adjunta la identificación del usuario autenticado antes de aplicar el parche
+            $identity = $this->request->getAttribute('identity');
+            if ($identity) {
+                $this->request = $this->request->withData('user_id', $identity->get('id'));
+            }
+
             $article = $this->Articles->patchEntity($article, $this->request->getData());
             if ($this->Articles->save($article)) {
                 $this->Flash->success(__('The article has been saved.'));

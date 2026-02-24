@@ -109,7 +109,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             ->add(new CsrfProtectionMiddleware([
                 'httponly' => true,
             ]))
-             ->add(new RoutingMiddleware($this))
+            ->add(new RoutingMiddleware($this))
             // add Authentication after RoutingMiddleware
             ->add(new AuthenticationMiddleware($this));
             ;
@@ -147,7 +147,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
 {
     $authenticationService = new AuthenticationService([
-        'unauthenticatedRedirect' => '/blog/users/login',
+        'unauthenticatedRedirect' => '/users/login', //Aqui estaba el problema, el redirect estaba apuntando a /blog/users/login y no a /users/login
         'queryParam' => 'redirect',
     ]);
 
@@ -167,7 +167,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             'username' => 'email',
             'password' => 'password',
         ],
-        'loginUrl' => '/blog/users/login',
+        'loginUrl' => '/users/login', //Error en el loginUrl, estaba apuntando a /blog/users/login y no a /users/login, lo que causaba un bucle de redirección
     ]);
 
     return $authenticationService;

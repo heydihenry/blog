@@ -6,11 +6,13 @@
 ?>
 <!-- templates/Articles/index.php -->
 <div class="container mt-4">
-    <!-- Header del Blog -->
+    <!-- Header del Blog 
+    y si es el header pq joraca no esta hecho con un elemento <header> -->
     <div class="row mb-4">
         <div class="col">
             <h1 class="display-4">Mi Blog</h1>
             <?= $this->Html->link('Añadir articulo', ['action' => 'add'], ['class'=>'btn btn-primary']) ?>
+            <?= $this->Html->link('Mis articulos', ['action' => 'myArticles'], ['class'=>'btn btn-primary']) ?>
             <p class="lead">Artículos recientes</p>
             <hr class="my-4">
         </div>
@@ -18,7 +20,9 @@
 
     
 
-    <!-- Lista de Artículos -->
+    <!-- Lista de Artículos 
+    !!!Esta mal llamada, el contenedor padre debe ser un elemeno <ul> 
+    y los elementos en cuestión deben estar envueltos en elementos <li> cada uno!!! digo, si de verdad es una lista -->
     <div class="row">
         <?php foreach ($articles as $article): ?>
         <div class="col-md-6 mb-4">

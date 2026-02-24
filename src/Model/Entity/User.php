@@ -34,6 +34,7 @@ class User extends Entity
         'role' => true,
         'created' => true,
         'modified' => true,
+        'user_id' => true,
     ];
 
     /**
