@@ -46,26 +46,58 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 '/',
                 ['class' => 'navbar-brand']
             ) ?>
-            <div class="d-flex">
-                <?php $user = $this->request->getAttribute('identity'); ?>
-                <?php if ($user): ?>
-                    <?= $this->Html->link(
-                        '<i class="bi bi-box-arrow-right"></i> Cerrar Sesión',
-                        ['controller' => 'Users', 'action' => 'logout'],
-                        ['class' => 'btn btn-outline-light', 'escape' => false]
-                    ) ?>
-                <?php else: ?>
-                    <?= $this->Html->link(
-                        '<i class="bi bi-person-plus"></i> Registro',
-                        ['controller' => 'Users', 'action' => 'register'],
-                        ['class' => 'btn btn-outline-light me-2', 'escape' => false]
-                    ) ?>
-                    <?= $this->Html->link(
-                        '<i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión',
-                        ['controller' => 'Users', 'action' => 'login'],
-                        ['class' => 'btn btn-light', 'escape' => false]
-                    ) ?>
-                <?php endif; ?>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <?php $user = $this->request->getAttribute('identity'); ?>
+                    <?php if ($user): ?>
+                        <li class="nav-item">
+                            <?= $this->Html->link(
+                                '<i class="bi bi-file-earmark-text"></i> Mis Artículos',
+                                ['controller' => 'Articles', 'action' => 'myArticles'],
+                                ['class' => 'nav-link', 'escape' => false]
+                            ) ?>
+                        </li>
+                        <li class="nav-item">
+                            <?= $this->Html->link(
+                                '<i class="bi bi-plus-circle"></i> Crear Artículo',
+                                ['controller' => 'Articles', 'action' => 'add'],
+                                ['class' => 'nav-link', 'escape' => false]
+                            ) ?>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> <?= h($user->email) ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <?= $this->Html->link(
+                                        '<i class="bi bi-box-arrow-right"></i> Cerrar Sesión',
+                                        ['controller' => 'Users', 'action' => 'logout'],
+                                        ['class' => 'dropdown-item', 'escape' => false]
+                                    ) ?>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <?= $this->Html->link(
+                                '<i class="bi bi-person-plus"></i> Registro',
+                                ['controller' => 'Users', 'action' => 'register'],
+                                ['class' => 'nav-link', 'escape' => false]
+                            ) ?>
+                        </li>
+                        <li class="nav-item">
+                            <?= $this->Html->link(
+                                '<i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión',
+                                ['controller' => 'Users', 'action' => 'login'],
+                                ['class' => 'nav-link', 'escape' => false]
+                            ) ?>
+                        </li>
+                    <?php endif; ?>
+                </ul>
             </div>
         </div>
     </nav>

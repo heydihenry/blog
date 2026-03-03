@@ -37,5 +37,16 @@ class AppView extends View
      */
     public function initialize(): void
     {
+        parent::initialize();
+
+        // Helpers usados en las vistas
+        $this->loadHelper('Html');
+        $this->loadHelper('Form');
+        $this->loadHelper('Flash');
+        $this->loadHelper('Paginator');
+        $this->loadHelper('Text');
+
+        // Helper de la plugin Authentication para acceder a la identidad en vistas
+        $this->loadHelper('Authentication.Identity');
     }
 }

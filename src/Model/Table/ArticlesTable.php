@@ -49,6 +49,10 @@ class ArticlesTable extends Table
             'foreignKey' => 'category_id',
         ]);
 
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+        ]);
+
         $this->addBehavior('Timestamp');
     }
 

@@ -4,27 +4,18 @@
  * @var iterable<\App\Model\Entity\Article> $articles
  */
 ?>
-<!-- templates/Articles/index.php -->
+<!-- templates/Articles/my_articles.php -->
 <div class="container mt-4">
-    <!-- Header del Blog -->
+    <!-- Header -->
     <div class="row mb-4">
         <div class="col">
-            <h1 class="display-4">Mi Blog</h1>
-            <div class="mb-3">
-                <?php if ($this->Identity->isLoggedIn()): ?>
-                    <?= $this->Html->link('Mis Artículos', ['action' => 'myArticles'], ['class'=>'btn btn-success']) ?>
-                    <?= $this->Html->link('Crear Artículo', ['action' => 'add'], ['class'=>'btn btn-primary ms-2']) ?>
-                <?php else: ?>
-                    <?= $this->Html->link('Iniciar Sesión', ['controller' => 'Users', 'action' => 'login'], ['class'=>'btn btn-primary']) ?>
-                <?php endif; ?>
-                <?= $this->Html->link('Generar DBF', ['controller' => 'Dbf', 'action' => 'generate'], ['class' => 'btn btn-secondary ms-2']) ?>
-            </div>
-            <p class="lead">Artículos recientes</p>
+            <h1 class="display-4">Mis Artículos</h1>
+            <?= $this->Html->link('Crear Nuevo Artículo', ['action' => 'add'], ['class'=>'btn btn-primary']) ?>
+            <?= $this->Html->link('Volver al Blog', ['action' => 'index'], ['class' => 'btn btn-secondary ms-2']) ?>
+            <p class="lead">Gestiona tus artículos publicados</p>
             <hr class="my-4">
         </div>
     </div>
-
-    
 
     <!-- Lista de Artículos -->
     <div class="row">
@@ -34,7 +25,7 @@
                 <div class="card-body">
                     <!-- Categoría -->
                     <span class="badge bg-primary mb-2">
-                        <?= h($article->category) ?>
+                        <?= h($article->category->name ?? 'Sin categoría') ?>
                     </span>
                     
                     <!-- Título -->
@@ -62,12 +53,22 @@
                     </p>
                 </div>
                 
-                <!-- Footer de la tarjeta -->
+                <!-- Footer de la tarjeta con acciones -->
                 <div class="card-footer bg-white border-0 pb-3">
                     <?= $this->Html->link(
-                        'Leer más →',
+                        'Leer →',
                         ['action' => 'view', $article->id],
                         ['class' => 'btn btn-outline-primary btn-sm']
+                    ) ?>
+                    <?= $this->Html->link(
+                        'Editar',
+                        ['action' => 'edit', $article->id],
+                        ['class' => 'btn btn-outline-warning btn-sm']
+                    ) ?>
+                    <?= $this->Form->postLink(
+                        'Eliminar',
+                        ['action' => 'delete', $article->id],
+                        ['confirm' => '¿Estás seguro?', 'class' => 'btn btn-outline-danger btn-sm']
                     ) ?>
                 </div>
             </div>
@@ -98,8 +99,9 @@
 <?php if (count($articles) == 0): ?>
 <div class="container mt-4">
     <div class="alert alert-info text-center" role="alert">
-        <h4 class="alert-heading">No hay artículos</h4>
-        <p>Todavía no se han publicado artículos en el blog.</p>
+        <h4 class="alert-heading">No tienes artículos creados</h4>
+        <p>Comienza creando tu primer artículo haciendo clic en el botón "Crear Nuevo Artículo".</p>
+        <?= $this->Html->link('Crear Artículo', ['action' => 'add'], ['class' => 'btn btn-primary mt-3']) ?>
     </div>
 </div>
 <?php endif; ?>

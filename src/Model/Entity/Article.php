@@ -14,8 +14,10 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  * @property int $category_id
+ * @property int $user_id
  * 
  * @property \App\Model\Entity\Category $category
+ * @property \App\Model\Entity\User $user
  */
 class Article extends Entity
 {
@@ -34,6 +36,8 @@ class Article extends Entity
         'created' => true,
         'modified' => true,
         'category_id' => true,
-        'category' => true
+        'user_id' => true,
+        'category' => true,
+        'user' => true
     ];
 }

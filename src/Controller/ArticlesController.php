@@ -46,6 +46,28 @@ class ArticlesController extends AppController
     }
 
     /**
+     * My Articles method
+     * Muestra solo los artículos del usuario autenticado
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function myArticles()
+    {
+        $user = $this->Authentication->getIdentity();
+        if (!$user) {
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+
+        $query = $this->Articles->find()
+            ->where(['Articles.user_id' => $user->id])
+            ->contain(['Categorys']);
+
+        $articles = $this->paginate($query);
+
+        $this->set(compact('articles'));
+    }
+
+    /**
      * Add method
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
