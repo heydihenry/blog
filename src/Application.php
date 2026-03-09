@@ -109,7 +109,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             ->add(new CsrfProtectionMiddleware([
                 'httponly' => true,
             ]))
-             ->add(new RoutingMiddleware($this))
+            ->add(new RoutingMiddleware($this))
             // add Authentication after RoutingMiddleware
             ->add(new AuthenticationMiddleware($this));
             ;
@@ -145,11 +145,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     }
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
-{
-    $authenticationService = new AuthenticationService([
-        'unauthenticatedRedirect' => '/users/login',
-        'queryParam' => 'redirect',
-    ]);
+    {
+        $authenticationService = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
 
     // Load identifiers, ensure we check email and password fields
     $authenticationService->loadIdentifier('Authentication.Password', [
@@ -164,8 +164,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         ]
     ]);
 
-    // Load the authenticators, you want session first
-    $authenticationService->loadAuthenticator('Authentication.Session');
     // Configure form data check to pick email and password
     $authenticationService->loadAuthenticator('Authentication.Form', [
         'fields' => [
@@ -176,5 +174,5 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     ]);
 
     return $authenticationService;
-}
+    }
 }

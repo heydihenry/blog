@@ -17,7 +17,7 @@
                 <?php else: ?>
                     <?= $this->Html->link('Iniciar Sesión', ['controller' => 'Users', 'action' => 'login'], ['class'=>'btn btn-primary']) ?>
                 <?php endif; ?>
-                <?= $this->Html->link('Generar DBF', ['controller' => 'Dbf', 'action' => 'generate'], ['class' => 'btn btn-secondary ms-2']) ?>
+                <?= $this->Html->link('Generar DBF', ['controller' => 'Dbf', 'action' => 'generate'], ['class' => 'btn btn-warning ms-2']) ?>
             </div>
             <p class="lead">Artículos recientes</p>
             <hr class="my-4">
