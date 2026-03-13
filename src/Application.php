@@ -156,13 +156,10 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         'fields' => [
             'username' => 'email',
             'password' => 'password',
-        ],
-        'resolver' => [
-            'className' => 'Authentication.Orm',
-            'finder' => 'all',
-            'userModel' => 'Users',
         ]
     ]);
+    //CArgar la autenticación 
+    $authenticationService->loadAuthenticator('Authentication.Session');
 
     // Configure form data check to pick email and password
     $authenticationService->loadAuthenticator('Authentication.Form', [

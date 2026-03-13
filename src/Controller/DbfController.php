@@ -9,7 +9,7 @@ class DbfController extends AppController
     {
         parent::beforeFilter($event);
         // Requiere autenticación para acceder a DBF
-        //$this->Authentication->addUnauthenticatedActions([]);
+        $this->Authentication->addUnauthenticatedActions([]);
     }
 
     /**
