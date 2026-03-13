@@ -5,12 +5,12 @@ use App\Utility\DbfGenerator;
 
 class DbfController extends AppController
 {
-    public function beforeFilter(\Cake\Event\EventInterface $event)
+    /*public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
         // Requiere autenticación para acceder a DBF
         $this->Authentication->addUnauthenticatedActions([]);
-    }
+    }*/
 
     /**
      * Genera archivo DBF con datos ingresados por el usuario
