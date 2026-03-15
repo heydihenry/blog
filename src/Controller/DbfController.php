@@ -23,10 +23,13 @@ class DbfController extends AppController
             
             // Definir estructura fija de campos
             $fields = [
-                ['name' => 'ID', 'type' => 'N', 'length' => 10, 'decimals' => 0],
-                ['name' => 'NAME', 'type' => 'C', 'length' => 50, 'decimals' => 0],
-                ['name' => 'EMAIL', 'type' => 'C', 'length' => 100, 'decimals' => 0],
-                ['name' => 'CREATED', 'type' => 'D', 'length' => 8, 'decimals' => 0],
+                ['name' => 'COD_TIPID', 'type' => 'C', 'length' => 2, 'decimals' => 0],
+                ['name' => 'COD_PAEXID', 'type' => 'N', 'length' => 3, 'decimals' => 0],
+                ['name' => 'NUM_IDEPER', 'type' => 'N', 'length' => 13, 'decimals' => 0],
+                ['name' => 'CTA_MNAC', 'type' => 'N', 'length' => 16, 'decimals' => 0],
+                ['name' => 'IMPORTE_N', 'type' => 'N', 'length' => 8, 'decimals' => 2],
+                ['name' => 'CTA_MLC', 'type' => 'C', 'length' => 50, 'decimals' => 0],
+                ['name' => 'IMPORTE_D', 'type' => 'N', 'length' => 8, 'decimals' => 2]
             ];
 
             $records = [];
@@ -35,25 +38,26 @@ class DbfController extends AppController
             if (isset($data['records']) && is_array($data['records'])) {
                 $recordId = 1;
                 foreach ($data['records'] as $idx => $record) {
-                    if (!empty($record['NAME'])) { // Solo agregar si tiene nombre
-                        $createdDate = $record['CREATED'] ?? date('Y-m-d');
-                        // Convertir formato de fecha si es necesario
-                        if (strpos($createdDate, '-') !== false) {
-                            $createdDate = str_replace('-', '', $createdDate);
-                        }
+                    $this->Flash->info('Intenté');
+                    $this->Flash->info(json_encode($record));
+                    $this->Flash->info(json_encode(!empty($record['NOMBRE'])));
+                    if (!empty($record['NOMBRE'])) { // Solo agregar si tiene nombre
                         
-                        $records[] = [
-                            'ID' => $recordId,
-                            'NAME' => substr($record['NAME'], 0, 50),
-                            'EMAIL' => substr($record['EMAIL'] ?? '', 0, 100),
-                            'CREATED' => $createdDate,
+                        $records[] = [ //Colocando los valores por defecto y haciendo ajustes 
+                            'COD_TIPID' => 'CI',
+                            'COD_PAEXID' => 247,
+                            'NUM_IDEPER' => isset($record['CARNET']) ? substr($record['CARNET'], 0, 11) : '',
+                            'CTA_MNAC' => isset($record['CUENTA']) ? substr($record['CUENTA'], 0, 16) : '',
+                            'IMPORTE_N' => isset($record['IMPORTE']) ? number_format((float)$record['IMPORTE'], 2, '.', '') : '0.00',
+                            'CTA_MLC' => substr($record['NOMBRE'], 0, 40), // ya sabemos que existe por !empty
+                            'IMPORTE_D' => 0
                         ];
                         $recordId++;
                     }
                 }
             }
 
-            if (empty($records)) {
+            if (empty($records)) { // Comprobando si realmente el usuario introdujo datos (Principalmente el nombre)
                 $this->Flash->error(__('Debes ingresar al menos un registro con nombre.'));
                 return $this->redirect(['action' => 'generate']);
             }
@@ -62,7 +66,7 @@ class DbfController extends AppController
             $generator = new DbfGenerator();
             $dbf = $generator->createDbf($fields, $records);
 
-            $filename = 'datos_' . date('Ymd_His') . '.dbf';
+            $filename = 'nomina_' . date('Ymd_His') . '.dbf';
 
             $this->response = $this->response
                 ->withType('application/octet-stream')

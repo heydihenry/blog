@@ -10,12 +10,12 @@
     <div class="row mb-4">
         <div class="col">
             <h1 class="display-4">Mi Blog</h1>
-            <div class="mb-3">
+            <div class="mb-3 d-grid gap-2 d-sm-flex justify-content-sm-center mb-4">
                 <?php if ($this->Identity->isLoggedIn()): ?>
-                    <?= $this->Html->link('Mis Artículos', ['action' => 'myArticles'], ['class'=>'btn btn-success']) ?>
+                    <?= $this->Html->link('Mis Artículos', ['action' => 'myArticles'], ['class'=>'btn btn-success ms-2']) ?>
                     <?= $this->Html->link('Crear Artículo', ['action' => 'add'], ['class'=>'btn btn-primary ms-2']) ?>
                 <?php else: ?>
-                    <?= $this->Html->link('Iniciar Sesión', ['controller' => 'Users', 'action' => 'login'], ['class'=>'btn btn-primary']) ?>
+                    <?= $this->Html->link('Iniciar Sesión', ['controller' => 'Users', 'action' => 'login'], ['class'=>'btn btn-primary ms-2']) ?>
                 <?php endif; ?>
                 <?= $this->Html->link('Generar DBF', ['controller' => 'Dbf', 'action' => 'generate'], ['class' => 'btn btn-warning ms-2']) ?>
             </div>
