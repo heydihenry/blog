@@ -11,11 +11,11 @@ namespace App\Controller;
  */
 class ArticlesController extends AppController
 {
-    public function beforeFilter(\Cake\Event\EventInterface $event)
+    /*public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
         $this->Authentication->addUnauthenticatedActions(['index', 'view']);
-    }
+    }*/
 
     /**
      * Index method
