@@ -12,6 +12,22 @@ class DbfController extends AppController
         $this->Authentication->addUnauthenticatedActions([]);
     }*/
 
+        
+    //Convertir los caracteres de vocales tildadas en vocales simples
+    private function eliminarAcentos($texto) 
+    {
+        $acentos = [
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'ñ' => 'n', 'Ñ' => 'N',
+            'ü' => 'u', 'Ü' => 'U',
+            'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+            'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+        ];
+        
+        return strtr($texto, $acentos);
+    }
+
     /**
      * Genera archivo DBF con datos ingresados por el usuario
      */
@@ -20,15 +36,15 @@ class DbfController extends AppController
         if ($this->request->is('post')) {
             // Procesar POST - generar archivo DBF
             $data = $this->request->getData();
-            
+
             // Definir estructura fija de campos
             $fields = [
-                ['name' => 'COD_TIPID', 'type' => 'C', 'length' => 2, 'decimals' => 0],
-                ['name' => 'COD_PAEXID', 'type' => 'N', 'length' => 3, 'decimals' => 0],
-                ['name' => 'NUM_IDEPER', 'type' => 'N', 'length' => 13, 'decimals' => 0],
-                ['name' => 'CTA_MNAC', 'type' => 'N', 'length' => 16, 'decimals' => 0],
+                ['name' => 'COD_TIPID', 'type' => 'C', 'length' => 2],
+                ['name' => 'COD_PAEXID', 'type' => 'N', 'length' => 3],
+                ['name' => 'NUM_IDEPER', 'type' => 'N', 'length' => 13],
+                ['name' => 'CTA_MNAC', 'type' => 'N', 'length' => 16],
                 ['name' => 'IMPORTE_N', 'type' => 'N', 'length' => 8, 'decimals' => 2],
-                ['name' => 'CTA_MLC', 'type' => 'C', 'length' => 50, 'decimals' => 0],
+                ['name' => 'CTA_MLC', 'type' => 'C', 'length' => 50],
                 ['name' => 'IMPORTE_D', 'type' => 'N', 'length' => 8, 'decimals' => 2]
             ];
 
@@ -38,9 +54,6 @@ class DbfController extends AppController
             if (isset($data['records']) && is_array($data['records'])) {
                 $recordId = 1;
                 foreach ($data['records'] as $idx => $record) {
-                    $this->Flash->info('Intenté');
-                    $this->Flash->info(json_encode($record));
-                    $this->Flash->info(json_encode(!empty($record['NOMBRE'])));
                     if (!empty($record['NOMBRE'])) { // Solo agregar si tiene nombre
                         
                         $records[] = [ //Colocando los valores por defecto y haciendo ajustes 
