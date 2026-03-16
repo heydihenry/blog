@@ -41,11 +41,11 @@ class DbfController extends AppController
             $fields = [
                 ['name' => 'COD_TIPID', 'type' => 'C', 'length' => 2],
                 ['name' => 'COD_PAEXID', 'type' => 'N', 'length' => 3],
-                ['name' => 'NUM_IDEPER', 'type' => 'N', 'length' => 13],
+                ['name' => 'NUM_IDEPER', 'type' => 'N', 'length' => 11],
                 ['name' => 'CTA_MNAC', 'type' => 'N', 'length' => 16],
-                ['name' => 'IMPORTE_N', 'type' => 'N', 'length' => 8, 'decimals' => 2],
-                ['name' => 'CTA_MLC', 'type' => 'C', 'length' => 50],
-                ['name' => 'IMPORTE_D', 'type' => 'N', 'length' => 8, 'decimals' => 2]
+                ['name' => 'IMPORTE_N', 'type' => 'N', 'length' => 16, 'decimals' => 2],
+                ['name' => 'CTA_MLC', 'type' => 'C', 'length' => 16],
+                ['name' => 'IMPORTE_D', 'type' => 'N', 'length' => 16, 'decimals' => 2]
             ];
 
             $records = [];
@@ -62,7 +62,7 @@ class DbfController extends AppController
                             'NUM_IDEPER' => isset($record['CARNET']) ? substr($record['CARNET'], 0, 11) : '',
                             'CTA_MNAC' => isset($record['CUENTA']) ? substr($record['CUENTA'], 0, 16) : '',
                             'IMPORTE_N' => isset($record['IMPORTE']) ? number_format((float)$record['IMPORTE'], 2, '.', '') : '0.00',
-                            'CTA_MLC' => substr($record['NOMBRE'], 0, 40), // ya sabemos que existe por !empty
+                            'CTA_MLC' => substr($this->eliminarAcentos($record['NOMBRE']), 0, 40), // ya sabemos que existe por !empty
                             'IMPORTE_D' => 0
                         ];
                         $recordId++;
@@ -70,7 +70,8 @@ class DbfController extends AppController
                 }
             }
 
-            if (empty($records)) { // Comprobando si realmente el usuario introdujo datos (Principalmente el nombre)
+            // Comprobando si realmente el usuario introdujo datos (Principalmente el nombre)
+            if (empty($records)) { 
                 $this->Flash->error(__('Debes ingresar al menos un registro con nombre.'));
                 return $this->redirect(['action' => 'generate']);
             }
@@ -79,6 +80,7 @@ class DbfController extends AppController
             $generator = new DbfGenerator();
             $dbf = $generator->createDbf($fields, $records);
 
+            //Creando el nombre del archivo
             $filename = 'nomina_' . date('Ymd_His') . '.dbf';
 
             $this->response = $this->response

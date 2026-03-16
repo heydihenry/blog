@@ -44,11 +44,11 @@
                     <thead style="border-bottom: 1px solid; margin-bottom: 5px;"
                         class="theader">
                         <tr>
-                            <th style="width: 5%;">No</th>
                             <th style="width: 25%;">Carnet</th>
-                            <th style="width: 35%;">Nombre</th>
-                            <th style="width: 25%;">Cuenta</th>
+                            <th style="width: 30%;">Nombre</th>
+                            <th style="width: 20%;">Cuenta</th>
                             <th style="width: 20%;">Importe</th>
+                            <th style="width: 5%;">Eliminar</th>
                         </tr>
                     </thead>
                     <tbody id="recordsTable">
@@ -56,10 +56,6 @@
                         $recordCount = 1;
                         for ($i = 0; $i < $recordCount; $i++): ?>
                         <tr class="record-row">
-                            <td class="align-middle">
-                                <span
-                                    class="row-number"><?= $i + 1 ?></span>
-                            </td>
                             <td>
                                 <?= $this->Form->control('records.' . $i . '.CARNET', [
                                     'label' => false,
@@ -79,6 +75,7 @@
                                     'class' => '',
                                     'required' => false,
                                     'type' => 'text',
+                                    'maxlength' => 16,
                                     'style' => 'width: 100%;'
                                 ]) ?>
                             </td>
@@ -90,6 +87,7 @@
                                     'type' => 'number',
                                     'required' => false,
                                     'minlength' => 16,
+                                    'maxlength' => 16,
                                     'style' => 'width: 100%;'
                                 ]) ?>
                             </td>
@@ -234,15 +232,6 @@
             tr.className = 'record-row';
             tr.style.marginTop = '5px';
                             
-            // Columna No
-            const tdNo = document.createElement('td');
-            tdNo.className = 'align-middle';
-            const span = document.createElement('span');
-            span.className = 'row-number';
-            span.textContent = newIndex + 1; // número visible
-            tdNo.appendChild(span);
-            tr.appendChild(tdNo);
-                            
             // Columna Carnet
             const tdCarnet = document.createElement('td');
             tdCarnet.innerHTML = `<?= $this->Form->control('records.INDEX.CARNET', [
@@ -251,7 +240,8 @@
                 'class' => '',
                 'required' => false,
                 'type' => 'number',
-                'minlength' => 13,
+                'minlength' => 11,
+                'maxlength' => 11,
                 'style' => 'width: 100%;'
             ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
             tr.appendChild(tdCarnet);
@@ -263,6 +253,7 @@
                 'placeholder' => 'Ej: Juan Enrique...',
                 'class' => '',
                 'required' => false,
+                'minlength' => 16,
                 'style' => 'width: 100%;'
             ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
             tr.appendChild(tdNombre);
@@ -276,6 +267,7 @@
                 'type' => 'number',
                 'required' => false,
                 'minlength' => 16,
+                'maxlength' => 16,
                 'style' => 'width: 100%;'
             ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
             tr.appendChild(tdCuenta);
@@ -288,9 +280,23 @@
                 'class' => '',
                 'type' => 'number',
                 'required' => false,
+                'maxlength' => 16,
                 'style' => 'width: 100%;'
             ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
             tr.appendChild(tdImporte);
+
+            // Celda con botón eliminar
+            const tdAccion = document.createElement('td');
+            const btnEliminar = document.createElement('button');
+            btnEliminar.type = 'button';
+            btnEliminar.textContent = ' - ';
+            btnEliminar.className = 'btn-eliminar'; // para identificar
+            btnEliminar.style = 'border: 1px solid #000; border-radius: 5px; text-align: center; width: 100%'
+            btnEliminar.onclick = function() {
+                tr.remove(); // Elimina la fila del DOM
+            };
+            tdAccion.appendChild(btnEliminar);
+            tr.appendChild(tdAccion);
                             
             // Añadir la fila al tbody
             tbody.appendChild(tr);
