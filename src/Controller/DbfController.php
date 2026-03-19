@@ -12,7 +12,19 @@ class DbfController extends AppController
         $this->Authentication->addUnauthenticatedActions([]);
     }*/
 
-        
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('RequestHandler');
+    }
+
+    /**
+     * Vista principal con las dos pestañas.
+     */
+    public function index()
+    {
+        // Solo renderiza la vista
+    }
     //Convertir los caracteres de vocales tildadas en vocales simples
     private function eliminarAcentos($texto) 
     {
@@ -91,12 +103,57 @@ class DbfController extends AppController
 
             return $this->response;
         }
+    }
+    /*  
+    Control para editar los datos de las bases de datos
+    */
+    public function edit() {
+        //Comprobando si la peticion es POST
+        if($this->request->is('POST')) {
+            $uploadFile = $this->request->getData('dbf_file');
 
-        // GET - mostrar formulario
-        // Obtener número de registros a mostrar (por defecto 5, máximo 50)
-        $recordCount = (int)($this->request->getQuery('rows', 5));
-        $recordCount = min(max($recordCount, 1), 50);
+            if (!$uploadFile ||  $uploadFile->getError() !== UPLOAD_ERR_OK) {
+                $this->Flash->error('No se pudo abrir el archivo .DBF.');
+                return [];
+            }
+
+            $filePath = $uploadFile->getStream()->getMetadata('uri');
+
+            $data = $this->processDbf($filePath);
+
+            if (empty($data)) {
+                $this->Flash->error('El archivo .dbf no contiene datos válidos o no pudo ser procesado.');
+                return;
+            }
+
+            // Enviar los datos a la vista
+            $this->set('dbfData', $data);
+            $this->set('fileName', $uploadFile->getClientFilename());
+        }
+    }
+    private function processDbf(string $filePath): array {
+        $fdbf = fopen($filePath, 'rb');
+        if (!$fdbf) return [];
         
-        $this->set(compact('recordCount'));
+        // Leer cabecera (primeros 32 bytes)
+        $header = fread($fdbf, 32);
+        $recordCount = unpack('V', substr($header, 4, 4))[1];
+        $recordLength = unpack('v', substr($header, 10, 2))[1];
+        
+        // Saltar la sección de campos hasta el terminador 0x0D
+        while (!feof($fdbf) && fread($fdbf, 1) != chr(0x0D));
+        
+        // Posicionarse al inicio de los registros
+        fseek($fdbf, ftell($fdbf) + 1);
+        
+        $records = [];
+        for ($i = 0; $i < $recordCount; $i++) {
+            $recordData = fread($fdbf, $recordLength);
+            // Aquí necesitarías parsear cada campo según su tipo...
+            $records[] = ['raw' => bin2hex($recordData)]; // Simplificación
+        }
+        
+        fclose($fdbf);
+        return $records;
     }
 }

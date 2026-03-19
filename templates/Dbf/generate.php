@@ -25,8 +25,10 @@
                         'type' => 'button',
                         'style' => 'background-color: #b23',
                         'class' => 'btn btn-secondary btn-ms',
+                        'id' => 'customFileButton'
                     ]
                 ) ?> 
+                <input type="file" accept='.dbf' style="display: none" id="fileInput">
             </div>
 
             <!-- Formulario -->
@@ -44,10 +46,10 @@
                     <thead style="border-bottom: 1px solid; margin-bottom: 5px;"
                         class="theader">
                         <tr>
-                            <th style="width: 25%;">Carnet</th>
+                            <th style="width: 20%;">Carnet</th>
                             <th style="width: 30%;">Nombre</th>
-                            <th style="width: 20%;">Cuenta</th>
-                            <th style="width: 20%;">Importe</th>
+                            <th style="width: 27%;">Cuenta</th>
+                            <th style="width: 18%;">Importe</th>
                             <th style="width: 5%;">Eliminar</th>
                         </tr>
                     </thead>
@@ -135,7 +137,6 @@
                     ]
                 ) ?>
             </div>
-
             <?= $this->Form->end() ?>
         </div>
     </div>
@@ -201,9 +202,10 @@
     }
 </style>
 
-<!-- Script para añadir filas dinámicamente -->
+
 <?php $this->append('script'); ?>
-<script>
+<script>  
+    //Script para añadir filas dinámicamente
     document.addEventListener('DOMContentLoaded', function() {
         const addRowBtn = document.getElementById('addRowBtn');
         const tbody = document.getElementById('recordsTable');
@@ -308,5 +310,212 @@
         // Evento click del botón
         addRowBtn.addEventListener('click', addRow);
     });
+
+    //Script para cargar un archivo formato .dbf
+    // Obtener referencias a los elementos
+    const customFileButton = document.getElementById('customFileButton');
+    const fileInput = document.getElementById('fileInput');
+
+    // Al hacer clic en el botón personalizado, se dispara el input file
+    customFileButton.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function() {
+        //El archivo que se introdujo
+        const archive = fileInput.files[0]
+
+        if(!archive) {
+            alert(`Archivo erroneo`)
+            throw new Error('Archivo erroneo')
+        }
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            const dataDBF = parseDBF(event.target.result)
+            for (let i = 0; i < dataDBF.numRecords; i++) {
+                alert(`Entrada ${i}`)
+                //Funcionalidad para añadir fila nueva
+                const tbody = document.querySelector('tbody[id="recordsTable"]');
+                if (!tbody) return;
+                // Contar las filas existentes con la clase 'record-row'
+                const filasExistentes = tbody.querySelectorAll('tr.record-row').length;
+                // Suponiendo que 'i' es el índice del registro actual (0, 1, 2...)
+                // Si el índice actual es mayor o igual al número de filas, significa que falta esta fila
+                if (i >= filasExistentes) {
+                    // El nuevo índice puede ser 'i' para mantener correspondencia
+                    const newIndex = i;
+                    // Crear la fila
+                    const tr = document.createElement('tr');
+                    tr.className = 'record-row';
+                    tr.style.marginTop = '5px';
+                    // Columna Carnet
+                    const tdCarnet = document.createElement('td');
+                    tdCarnet.innerHTML = `<?= $this->Form->control('records.INDEX.CARNET', [
+                        'label' => false,
+                        'placeholder' => 'Ej:000101...',
+                        'class' => '',
+                        'required' => false,
+                        'type' => 'number',
+                        'minlength' => 11,
+                        'maxlength' => 11,
+                        'style' => 'width: 100%;'
+                    ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
+                    tr.appendChild(tdCarnet);
+
+                    // Columna Nombre
+                    const tdNombre = document.createElement('td');
+                    tdNombre.innerHTML = `<?= $this->Form->control('records.INDEX.NOMBRE', [
+                        'label' => false,
+                        'placeholder' => 'Ej: Juan Enrique...',
+                        'class' => '',
+                        'required' => false,
+                        'minlength' => 16,
+                        'style' => 'width: 100%;'
+                    ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
+                    tr.appendChild(tdNombre);
+
+                    // Columna Cuenta
+                    const tdCuenta = document.createElement('td');
+                    tdCuenta.innerHTML = `<?= $this->Form->control('records.INDEX.CUENTA', [
+                        'label' => false,
+                        'placeholder' => 'Ej: 05987...',
+                        'class' => '',
+                        'type' => 'number',
+                        'required' => false,
+                        'minlength' => 16,
+                        'maxlength' => 16,
+                        'style' => 'width: 100%;'
+                    ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
+                    tr.appendChild(tdCuenta);
+
+                    // Columna Importe (corregido: sin punto final en el nombre)
+                    const tdImporte = document.createElement('td');
+                    tdImporte.innerHTML = `<?= $this->Form->control('records.INDEX.IMPORTE', [
+                        'label' => false,
+                        'placeholder' => '0.00',
+                        'class' => '',
+                        'type' => 'number',
+                        'required' => false,
+                        'maxlength' => 16,
+                        'style' => 'width: 100%;'
+                    ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
+                    tr.appendChild(tdImporte);
+
+                    // Celda con botón eliminar
+                    const tdAccion = document.createElement('td');
+                    const btnEliminar = document.createElement('button');
+                    btnEliminar.type = 'button';
+                    btnEliminar.textContent = ' - ';
+                    btnEliminar.className = 'btn-eliminar';
+                    btnEliminar.style.cssText = 'border: 1px solid #000; border-radius: 5px; text-align: center; width: 100%;';
+                    btnEliminar.onclick = function() {
+                        tr.remove(); // Elimina la fila del DOM
+                    };
+                    tdAccion.appendChild(btnEliminar);
+                    tr.appendChild(tdAccion);
+
+                    // Añadir la fila al tbody
+                    tbody.appendChild(tr);
+                }
+                document.querySelector(`input[name="records[${i}][CARNET]"]`).value = dataDBF.records[i]['NUM_IDEPER'];
+                document.querySelector(`input[name="records[${i}][NOMBRE]"]`).value = dataDBF.records[i]['CTA_MLC'];
+                document.querySelector(`input[name="records[${i}][CUENTA]"]`).value = dataDBF.records[i]['CTA_MNAC'];
+                document.querySelector(`input[name="records[${i}][IMPORTE]"]`).value = dataDBF.records[i]['IMPORTE_N'];
+            }
+        }
+
+        reader.readAsArrayBuffer(archive)
+    });
+
+    function parseDBF(arrayBuffer) {
+        const view = new DataView(arrayBuffer);
+        let offset = 0;
+        // --- Cabecera principal (32 bytes) ---
+        const version = view.getUint8(offset); offset += 1;
+        const year = view.getUint8(offset) + 1900; offset += 1;
+        const month = view.getUint8(offset); offset += 1;
+        const day = view.getUint8(offset); offset += 1;
+        const numRecords = view.getUint32(offset, true); offset += 4;
+        const headerLen = view.getUint16(offset, true); offset += 2;
+        const recordLen = view.getUint16(offset, true); offset += 2;
+        offset = 32; // Saltar bytes reservados
+        
+        // --- Descriptores de campo ---
+        const fields = [];
+        while (offset < headerLen - 1) {
+            // Nombre (11 bytes, null-terminated)
+            let name = '';
+            for (let i = 0; i < 11; i++) {
+                const byte = view.getUint8(offset + i);
+                if (byte === 0) break;
+                name += String.fromCharCode(byte);
+            }
+            offset += 11;
+
+            const type = String.fromCharCode(view.getUint8(offset)); offset += 1;
+            offset += 4; // Saltar dirección (4 bytes)
+            const length = view.getUint8(offset); offset += 1;
+            const decimals = view.getUint8(offset); offset += 1;
+            offset += 14; // Saltar reservados
+
+            fields.push({ name, type, length, decimals });
+
+            if (view.getUint8(offset) === 0x0D) { // Terminador
+                offset += 1;
+                break;
+            }
+        }
+        offset = headerLen; // Inicio de registros
+        
+        // --- Registros ---
+        const records = [];
+        for (let i = 0; i < numRecords; i++) {
+        const deletedFlag = view.getUint8(offset);
+        const record = { _deleted: deletedFlag === 0x2A };
+        let dataOffset = offset + 1;
+
+        fields.forEach(field => {
+            let raw = '';
+            for (let j = 0; j < field.length; j++) {
+                raw += String.fromCharCode(view.getUint8(dataOffset + j));
+            }
+            dataOffset += field.length;
+
+            let value;
+            if (field.type === 'N' || field.type === 'F') {
+                const trimmed = raw.trim();
+                value = trimmed === '' ? null : parseFloat(trimmed);
+            } else if (field.type === 'L') {
+                const ch = raw.trim().toUpperCase();
+                if (ch === 'T' || ch === 'Y') value = true;
+                else if (ch === 'F' || ch === 'N') value = false;
+                else value = null;
+            } else if (field.type === 'D') {
+                const trimmed = raw.trim();
+                if (trimmed.length === 8 && !isNaN(trimmed)) {
+                    value = `${trimmed.slice(0,4)}-${trimmed.slice(4,6)}-${trimmed.slice(6,8)}`;
+                } else value = null;
+            } else {
+              value = raw.replace(/\s+$/, ''); // Quitar espacios finales
+            }
+            record[field.name] = value;
+        });
+        
+        records.push(record);
+        offset += recordLen;
+        }
+        alert(`Archivo creado ${day}/${month}/${year} \nContiene ${numRecords} entradas`)
+
+        return {
+            version,
+            lastUpdate: { year, month, day },
+            numRecords,
+            headerLen,
+            recordLen,
+            fields,
+            records
+        };
+    }
 </script>
 <?php $this->end(); ?>
