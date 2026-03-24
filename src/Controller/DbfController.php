@@ -49,6 +49,11 @@ class DbfController extends AppController
             // Procesar POST - generar archivo DBF
             $data = $this->request->getData();
 
+            if(!$data) {
+                $this->Flash->error(__('Debes ingresar al menos un registro.'));
+                return $this->redirect(['action' => 'generate']);
+            }
+
             // Definir estructura fija de campos
             $fields = [
                 ['name' => 'COD_TIPID', 'type' => 'C', 'length' => 2],
@@ -66,8 +71,8 @@ class DbfController extends AppController
             if (isset($data['records']) && is_array($data['records'])) {
                 $recordId = 1;
                 foreach ($data['records'] as $idx => $record) {
-                    if (!empty($record['NOMBRE'])) { // Solo agregar si tiene nombre
-                        
+                    // Solo agregar si cumple con los requisitos
+                    if (!empty($record['NOMBRE']) && mb_strlen($record['CARNET'], 'UTF-8') == 11 && mb_strlen($record['CUENTA'], 'UTF-8') == 16) { 
                         $records[] = [ //Colocando los valores por defecto y haciendo ajustes 
                             'COD_TIPID' => 'CI',
                             'COD_PAEXID' => 247,
@@ -78,14 +83,13 @@ class DbfController extends AppController
                             'IMPORTE_D' => 0
                         ];
                         $recordId++;
+                    } else {
+                        if(empty($record['NOMBRE'])) $this->Flash->error(__('Debes ingresar al menos un registro con nombre.'));
+                        if(!mb_strlen($record['CARNET'], 'UTF-8') == 11)  $this->Flash->error(__('Los carnet o ID son 11 digitos.'));
+                        if(!mb_strlen($record['CUENTA'], 'UTF-8') == 16)  $this->Flash->error(__('Las cuentas son 16 digitos.'));
+                        return $this->redirect(['action' => 'generate']);
                     }
                 }
-            }
-
-            // Comprobando si realmente el usuario introdujo datos (Principalmente el nombre)
-            if (empty($records)) { 
-                $this->Flash->error(__('Debes ingresar al menos un registro con nombre.'));
-                return $this->redirect(['action' => 'generate']);
             }
 
             // Generar archivo DBF

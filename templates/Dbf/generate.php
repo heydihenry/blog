@@ -64,7 +64,7 @@
                                     'placeholder' => 'Ej: 000101...',
                                     'class' => '',
                                     'required' => false,
-                                    'type' => 'number',
+                                    'type' => 'text',
                                     'minlength' => 11,
                                     'maxlenght' => 11,
                                     'style' => 'width: 100%'
@@ -94,18 +94,29 @@
                                 ]) ?>
                             </td>
                             <td>
-                                <?= $this->Form->control('records.' . $i . '.IMPORTE', [
+                                <?= $this->Form->control('records.INDEX.IMPORTE', [
                                     'label' => false,
+                                    'step' => 0.01,
+                                    'value' => 0.00,
                                     'placeholder' => '0.00',
-                                    'class' => '',
+                                    'class' => 'IMPORTE',
                                     'type' => 'number',
                                     'required' => false,
+                                    'maxlength' => 16,
                                     'style' => 'width: 100%;'
                                 ]) ?>
                             </td>
                         </tr>
                         <?php endfor; ?>
                     </tbody>
+                    <tfoot style="border-top: 1px solid #000; padding: 5px;">
+                        <tr>
+                            <td style="text-align: right;"
+                                colspan="3"> Total:
+                            </td>
+                            <td id="totalImporte">0.00</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
 
@@ -276,10 +287,10 @@
                             
             // Columna Importe
             const tdImporte = document.createElement('td');
-            tdImporte.innerHTML = `<?= $this->Form->control('records.INDEX.IMPORTE.', [
+            tdImporte.innerHTML = `<?= $this->Form->control('records.INDEX.IMPORTE', [
                 'label' => false,
                 'placeholder' => '0.00',
-                'class' => '',
+                'class' => 'IMPORTE',
                 'type' => 'number',
                 'required' => false,
                 'maxlength' => 16,
@@ -356,7 +367,7 @@
                         'placeholder' => 'Ej:000101...',
                         'class' => '',
                         'required' => false,
-                        'type' => 'number',
+                        'type' => 'text',
                         'minlength' => 11,
                         'maxlength' => 11,
                         'style' => 'width: 100%;'
@@ -381,7 +392,7 @@
                         'label' => false,
                         'placeholder' => 'Ej: 05987...',
                         'class' => '',
-                        'type' => 'number',
+                        'type' => 'text',
                         'required' => false,
                         'minlength' => 16,
                         'maxlength' => 16,
@@ -394,7 +405,7 @@
                     tdImporte.innerHTML = `<?= $this->Form->control('records.INDEX.IMPORTE', [
                         'label' => false,
                         'placeholder' => '0.00',
-                        'class' => '',
+                        'class' => 'IMPORTE',
                         'type' => 'number',
                         'required' => false,
                         'maxlength' => 16,
@@ -517,5 +528,35 @@
             records
         };
     }
+
+    // Función para calcular la suma de todos los importes
+    const tabla = document.getElementById('recordsTable');
+    const tbody = tabla.querySelector('tbody');
+    const totalSpan = document.getElementById('totalImporte');
+
+    // Función para calcular la suma de todos los importes
+    function actualizarTotal() {
+        let total = 0;
+        // Seleccionar todos los inputs con clase 'IMPORTE' dentro de la tabla
+        const inputsImporte = tabla.querySelectorAll('input.IMPORTE');
+        inputsImporte.forEach(input => {
+            // Obtener el valor como número, si es válido
+            const valor = parseFloat(input.value);
+            if (!isNaN(valor)) {
+                total += valor;
+            }
+        });
+        // Actualizar el total en la celda
+        totalSpan.textContent = total.toFixed(2);
+    }
+
+    // Delegación de eventos: escucha en la tabla cualquier cambio de input
+    tabla.addEventListener('input', function(e) {
+        // Si el elemento que cambió es un input con clase 'IMPORTE'
+        const input = e.target.closest('input.IMPORTE');
+        if (input) {
+            actualizarTotal();
+        }
+    });
 </script>
 <?php $this->end(); ?>
