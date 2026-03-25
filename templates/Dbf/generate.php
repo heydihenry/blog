@@ -86,7 +86,7 @@
                                     'label' => false,
                                     'placeholder' => 'Ej: 05987...',
                                     'class' => '',
-                                    'type' => 'number',
+                                    'type' => 'text',
                                     'required' => false,
                                     'minlength' => 16,
                                     'maxlength' => 16,
@@ -252,7 +252,7 @@
                 'placeholder' => 'Ej:000101...',
                 'class' => '',
                 'required' => false,
-                'type' => 'number',
+                'type' => 'text',
                 'minlength' => 11,
                 'maxlength' => 11,
                 'style' => 'width: 100%;'
@@ -277,7 +277,7 @@
                 'label' => false,
                 'placeholder' => 'Ej: 05987...',
                 'class' => '',
-                'type' => 'number',
+                'type' => 'text',
                 'required' => false,
                 'minlength' => 16,
                 'maxlength' => 16,
@@ -422,6 +422,7 @@
                     btnEliminar.style.cssText = 'border: 1px solid #000; border-radius: 5px; text-align: center; width: 100%;';
                     btnEliminar.onclick = function() {
                         tr.remove(); // Elimina la fila del DOM
+                        actualizarTotal()
                     };
                     tdAccion.appendChild(btnEliminar);
                     tr.appendChild(tdAccion);
@@ -516,7 +517,6 @@
         records.push(record);
         offset += recordLen;
         }
-        alert(`Archivo creado ${day}/${month}/${year} \nContiene ${numRecords} entradas`)
 
         return {
             version,
@@ -554,7 +554,8 @@
     tabla.addEventListener('input', function(e) {
         // Si el elemento que cambió es un input con clase 'IMPORTE'
         const input = e.target.closest('input.IMPORTE');
-        if (input) {
+        const elimn = e.target.closest('buttom.btn-eliminar')
+        if (input || elimn) {
             actualizarTotal();
         }
     });
