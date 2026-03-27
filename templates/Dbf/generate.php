@@ -62,9 +62,9 @@
                                 <?= $this->Form->control('records.' . $i . '.CARNET', [
                                     'label' => false,
                                     'placeholder' => 'Ej: 000101...',
-                                    'class' => '',
+                                    'class' => 'CARNET',
                                     'required' => false,
-                                    'type' => 'text',
+                                    'type' => 'number',
                                     'minlength' => 11,
                                     'maxlenght' => 11,
                                     'style' => 'width: 100%'
@@ -85,8 +85,8 @@
                                 <?= $this->Form->control('records.' . $i . '.CUENTA', [
                                     'label' => false,
                                     'placeholder' => 'Ej: 05987...',
-                                    'class' => '',
-                                    'type' => 'text',
+                                    'class' => 'CUENTA',
+                                    'type' => 'number',
                                     'required' => false,
                                     'minlength' => 16,
                                     'maxlength' => 16,
@@ -94,7 +94,7 @@
                                 ]) ?>
                             </td>
                             <td>
-                                <?= $this->Form->control('records.INDEX.IMPORTE', [
+                                <?= $this->Form->control('records.' . $i . '.IMPORTE', [
                                     'label' => false,
                                     'step' => 0.01,
                                     'value' => 0.00,
@@ -250,9 +250,9 @@
             tdCarnet.innerHTML = `<?= $this->Form->control('records.INDEX.CARNET', [
                 'label' => false,
                 'placeholder' => 'Ej:000101...',
-                'class' => '',
+                'class' => 'CARNET',
                 'required' => false,
-                'type' => 'text',
+                'type' => 'number',
                 'minlength' => 11,
                 'maxlength' => 11,
                 'style' => 'width: 100%;'
@@ -276,8 +276,8 @@
             tdCuenta.innerHTML = `<?= $this->Form->control('records.INDEX.CUENTA', [
                 'label' => false,
                 'placeholder' => 'Ej: 05987...',
-                'class' => '',
-                'type' => 'text',
+                'class' => 'CUENTA',
+                'type' => 'number',
                 'required' => false,
                 'minlength' => 16,
                 'maxlength' => 16,
@@ -345,7 +345,6 @@
         reader.onload = (event) => {
             const dataDBF = parseDBF(event.target.result)
             for (let i = 0; i < dataDBF.numRecords; i++) {
-                alert(`Entrada ${i}`)
                 //Funcionalidad para añadir fila nueva
                 const tbody = document.querySelector('tbody[id="recordsTable"]');
                 if (!tbody) return;
@@ -353,7 +352,7 @@
                 const filasExistentes = tbody.querySelectorAll('tr.record-row').length;
                 // Suponiendo que 'i' es el índice del registro actual (0, 1, 2...)
                 // Si el índice actual es mayor o igual al número de filas, significa que falta esta fila
-                if (i >= filasExistentes) {
+                if (i >= filasExistentes-1 && i != 0) {
                     // El nuevo índice puede ser 'i' para mantener correspondencia
                     const newIndex = i;
                     // Crear la fila
@@ -365,9 +364,9 @@
                     tdCarnet.innerHTML = `<?= $this->Form->control('records.INDEX.CARNET', [
                         'label' => false,
                         'placeholder' => 'Ej:000101...',
-                        'class' => '',
+                        'class' => 'CARNET',
                         'required' => false,
-                        'type' => 'text',
+                        'type' => 'number',
                         'minlength' => 11,
                         'maxlength' => 11,
                         'style' => 'width: 100%;'
@@ -391,8 +390,8 @@
                     tdCuenta.innerHTML = `<?= $this->Form->control('records.INDEX.CUENTA', [
                         'label' => false,
                         'placeholder' => 'Ej: 05987...',
-                        'class' => '',
-                        'type' => 'text',
+                        'class' => 'CUENTA',
+                        'type' => 'number',
                         'required' => false,
                         'minlength' => 16,
                         'maxlength' => 16,
@@ -430,11 +429,13 @@
                     // Añadir la fila al tbody
                     tbody.appendChild(tr);
                 }
+                
                 document.querySelector(`input[name="records[${i}][CARNET]"]`).value = dataDBF.records[i]['NUM_IDEPER'];
                 document.querySelector(`input[name="records[${i}][NOMBRE]"]`).value = dataDBF.records[i]['CTA_MLC'];
                 document.querySelector(`input[name="records[${i}][CUENTA]"]`).value = dataDBF.records[i]['CTA_MNAC'];
                 document.querySelector(`input[name="records[${i}][IMPORTE]"]`).value = dataDBF.records[i]['IMPORTE_N'];
             }
+            actualizarTotal()
         }
 
         reader.readAsArrayBuffer(archive)
@@ -539,13 +540,15 @@
         let total = 0;
         // Seleccionar todos los inputs con clase 'IMPORTE' dentro de la tabla
         const inputsImporte = tabla.querySelectorAll('input.IMPORTE');
-        inputsImporte.forEach(input => {
-            // Obtener el valor como número, si es válido
-            const valor = parseFloat(input.value);
-            if (!isNaN(valor)) {
-                total += valor;
-            }
-        });
+        if(inputsImporte.values) {
+            inputsImporte.forEach(input => {
+                // Obtener el valor como número, si es válido
+                const valor = parseFloat(input.value);
+                if (!isNaN(valor)) {
+                    total += valor;
+                }
+            });
+        }
         // Actualizar el total en la celda
         totalSpan.textContent = total.toFixed(2);
     }
@@ -559,5 +562,26 @@
             actualizarTotal();
         }
     });
+
+    //Deteccion de extension del input
+    const carnet = document.querySelector(`input.CARNET`);
+    const cuenta = document.querySelector(`input.CUENTA`);
+    const importe = document.querySelector(`input.IMPORTE`)
+
+    carnet.addEventListener('input', function() {
+        if (this.value.length > 11) {
+            this.value = this.value.slice(0, 11);
+        }
+    });
+    cuenta.addEventListener('input', function() {
+        if(this.value.length > 16) {
+            this.value = this.value.slice(0, 16);
+        }
+    });
+    importe.addEventListener('input', function() {
+        if(this.value.split('.')[1].length > 2) {
+            this.value = `${this.value.split('.')[0]}.${this.value.split('.')[1].slice(0, 2)}`
+        }
+    })
 </script>
 <?php $this->end(); ?>

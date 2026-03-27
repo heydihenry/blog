@@ -58,8 +58,8 @@ class DbfController extends AppController
             $fields = [
                 ['name' => 'COD_TIPID', 'type' => 'C', 'length' => 2],
                 ['name' => 'COD_PAEXID', 'type' => 'N', 'length' => 3],
-                ['name' => 'NUM_IDEPER', 'type' => 'N', 'length' => 11],
-                ['name' => 'CTA_MNAC', 'type' => 'N', 'length' => 16],
+                ['name' => 'NUM_IDEPER', 'type' => 'C', 'length' => 11],
+                ['name' => 'CTA_MNAC', 'type' => 'C', 'length' => 16],
                 ['name' => 'IMPORTE_N', 'type' => 'N', 'length' => 16, 'decimals' => 2],
                 ['name' => 'CTA_MLC', 'type' => 'C', 'length' => 16],
                 ['name' => 'IMPORTE_D', 'type' => 'N', 'length' => 16, 'decimals' => 2]
