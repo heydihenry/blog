@@ -54,12 +54,10 @@
                         </tr>
                     </thead>
                     <tbody id="recordsTable">
-                        <?php 
-                        $recordCount = 1;
-                        for ($i = 0; $i < $recordCount; $i++): ?>
                         <tr class="record-row">
                             <td>
-                                <?= $this->Form->control('records.' . $i . '.CARNET', [
+                                <?= $this->Form->control('records.' . 0 . '.CARNET', [
+                                    'id' => 'records[0][CARNET]',
                                     'label' => false,
                                     'placeholder' => 'Ej: 000101...',
                                     'class' => 'CARNET',
@@ -71,7 +69,8 @@
                                 ]) ?>
                             </td>
                             <td>
-                                <?= $this->Form->control('records.' . $i . '.NOMBRE', [
+                                <?= $this->Form->control('records.' . 0 . '.NOMBRE', [
+                                    'id' => 'records[0][NOMBRE]',
                                     'label' => false,
                                     'placeholder' => 'Ej: Juan Enrique...',
                                     'class' => '',
@@ -82,7 +81,8 @@
                                 ]) ?>
                             </td>
                             <td>
-                                <?= $this->Form->control('records.' . $i . '.CUENTA', [
+                                <?= $this->Form->control('records.' . 0 . '.CUENTA', [
+                                    'id' => 'records[0][CUENTA]',
                                     'label' => false,
                                     'placeholder' => 'Ej: 05987...',
                                     'class' => 'CUENTA',
@@ -94,20 +94,28 @@
                                 ]) ?>
                             </td>
                             <td>
-                                <?= $this->Form->control('records.' . $i . '.IMPORTE', [
+                                <?= $this->Form->control('records.' . 0 . '.IMPORTE', [
+                                    'id' => 'records[0][IMPORTE]',
                                     'label' => false,
                                     'step' => 0.01,
                                     'value' => 0.00,
                                     'placeholder' => '0.00',
                                     'class' => 'IMPORTE',
-                                    'type' => 'number',
+                                    'type' => 'text',
                                     'required' => false,
                                     'maxlength' => 16,
                                     'style' => 'width: 100%;'
                                 ]) ?>
                             </td>
+                            <td>
+                                <button type="button"
+                                    class="btn-eliminar"
+                                    style="border: 1px solid #000; border-radius: 5px; text-align: center; width: 100%;"
+                                    onclick="this.closest('tr').remove(); actualizarTotal();">
+                                    -
+                                </button>
+                            </td>
                         </tr>
-                        <?php endfor; ?>
                     </tbody>
                     <tfoot style="border-top: 1px solid #000; padding: 5px;">
                         <tr>
@@ -248,6 +256,7 @@
             // Columna Carnet
             const tdCarnet = document.createElement('td');
             tdCarnet.innerHTML = `<?= $this->Form->control('records.INDEX.CARNET', [
+                'id' => 'records[INDEX][CARNET]',
                 'label' => false,
                 'placeholder' => 'Ej:000101...',
                 'class' => 'CARNET',
@@ -262,6 +271,7 @@
             // Columna Nombre
             const tdNombre = document.createElement('td');
             tdNombre.innerHTML = `<?= $this->Form->control('records.INDEX.NOMBRE', [
+                'id' => 'records[INDEX][NOMBRE]',
                 'label' => false,
                 'placeholder' => 'Ej: Juan Enrique...',
                 'class' => '',
@@ -274,6 +284,7 @@
             // Columna Cuenta
             const tdCuenta = document.createElement('td');
             tdCuenta.innerHTML = `<?= $this->Form->control('records.INDEX.CUENTA', [
+                'id' => 'records[INDEX][CUENTA]',
                 'label' => false,
                 'placeholder' => 'Ej: 05987...',
                 'class' => 'CUENTA',
@@ -288,10 +299,11 @@
             // Columna Importe
             const tdImporte = document.createElement('td');
             tdImporte.innerHTML = `<?= $this->Form->control('records.INDEX.IMPORTE', [
+                'id' => 'records[INDEX][IMPORTE]',
                 'label' => false,
                 'placeholder' => '0.00',
                 'class' => 'IMPORTE',
-                'type' => 'number',
+                'type' => 'text',
                 'required' => false,
                 'maxlength' => 16,
                 'style' => 'width: 100%;'
@@ -362,6 +374,7 @@
                     // Columna Carnet
                     const tdCarnet = document.createElement('td');
                     tdCarnet.innerHTML = `<?= $this->Form->control('records.INDEX.CARNET', [
+                        'id' => 'records[INDEX][CARNET]',
                         'label' => false,
                         'placeholder' => 'Ej:000101...',
                         'class' => 'CARNET',
@@ -376,6 +389,7 @@
                     // Columna Nombre
                     const tdNombre = document.createElement('td');
                     tdNombre.innerHTML = `<?= $this->Form->control('records.INDEX.NOMBRE', [
+                        'id' => 'records[INDEX][NOMBRE]',
                         'label' => false,
                         'placeholder' => 'Ej: Juan Enrique...',
                         'class' => '',
@@ -388,6 +402,7 @@
                     // Columna Cuenta
                     const tdCuenta = document.createElement('td');
                     tdCuenta.innerHTML = `<?= $this->Form->control('records.INDEX.CUENTA', [
+                        'id' => 'records[INDEX][CUENTA]',
                         'label' => false,
                         'placeholder' => 'Ej: 05987...',
                         'class' => 'CUENTA',
@@ -402,12 +417,12 @@
                     // Columna Importe (corregido: sin punto final en el nombre)
                     const tdImporte = document.createElement('td');
                     tdImporte.innerHTML = `<?= $this->Form->control('records.INDEX.IMPORTE', [
+                        'id' => 'records[INDEX][IMPORTE]',
                         'label' => false,
                         'placeholder' => '0.00',
                         'class' => 'IMPORTE',
-                        'type' => 'number',
+                        'type' => 'text',
                         'required' => false,
-                        'maxlength' => 16,
                         'style' => 'width: 100%;'
                     ]) ?>`.replace(/records\[INDEX\]/g, `records[${newIndex}]`);
                     tr.appendChild(tdImporte);
@@ -564,24 +579,29 @@
     });
 
     //Deteccion de extension del input
-    const carnet = document.querySelector(`input.CARNET`);
-    const cuenta = document.querySelector(`input.CUENTA`);
-    const importe = document.querySelector(`input.IMPORTE`)
+    const carnet = tabla.querySelectorAll(`input[class="CARNET"]`);
+    const cuenta = tabla.querySelectorAll(`input[class="CUENTA"]`);
+    const importe = tabla.querySelectorAll('input[class="IMPORTE"]');
 
-    carnet.addEventListener('input', function() {
-        if (this.value.length > 11) {
-            this.value = this.value.slice(0, 11);
+    tabla.addEventListener('input', function(e) {
+        if(e.target.classList.contains('CARNET')) {
+            e.target.value = e.target.value.replace(/[^\d]/g, '');
+            if(e.target.value.length > 11) {
+                e.target.value = e.target.value.slice(0, 11);
+            }
+        }
+        else if(e.target.classList.contains('CUENTA')) {
+            e.target.value = e.target.value.replace(/[^\d]/g, '');
+            if(e.target.value.length > 16) {
+                e.target.value = e.target.value.slice(0, 16);
+            }
+        }
+        else if(e.target.classList.contains('IMPORTE')) {
+            e.target.value = e.target.value.replace(/[^\d,.]/g, '');
+            if(e.target.value.split('.')[1]?.length > 2) {
+                e.target.value = `${e.target.value.split('.')[0]}.${e.target.value.split('.')[1].slice(0, 2)}`
+            }
         }
     });
-    cuenta.addEventListener('input', function() {
-        if(this.value.length > 16) {
-            this.value = this.value.slice(0, 16);
-        }
-    });
-    importe.addEventListener('input', function() {
-        if(this.value.split('.')[1].length > 2) {
-            this.value = `${this.value.split('.')[0]}.${this.value.split('.')[1].slice(0, 2)}`
-        }
-    })
 </script>
 <?php $this->end(); ?>
