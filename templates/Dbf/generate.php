@@ -597,7 +597,7 @@
             }
         }
         else if(e.target.classList.contains('IMPORTE')) {
-            e.target.value = e.target.value.replace(/[^\d,.]/g, '');
+            e.target.value = e.target.value.replace(/[^\d.]/g, '');
             if(e.target.value.split('.')[1]?.length > 2) {
                 e.target.value = `${e.target.value.split('.')[0]}.${e.target.value.split('.')[1].slice(0, 2)}`
             }
