@@ -72,7 +72,7 @@ class DbfController extends AppController
                 $recordId = 1;
                 foreach ($data['records'] as $idx => $record) {
                     // Solo agregar si cumple con los requisitos
-                    if (!empty($record['NOMBRE'])) { 
+                    if (!empty($record['NOMBRE']) && !empty($record['CARNET']) && !empty($record['CUENTA']) && !empty($record['IMPORTE'])) { 
                         $records[] = [ //Colocando los valores por defecto y haciendo ajustes 
                             'COD_TIPID' => 'CI',
                             'COD_PAEXID' => 247,
