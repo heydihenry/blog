@@ -73,7 +73,7 @@
                                     'id' => 'records[0][NOMBRE]',
                                     'label' => false,
                                     'placeholder' => 'Ej: Juan Enrique...',
-                                    'class' => '',
+                                    'class' => 'NOMBRE',
                                     'required' => false,
                                     'type' => 'text',
                                     'maxlength' => 16,
@@ -145,6 +145,7 @@
                         'type' => 'submit',
                         'class' => 'btn btn-success btn-ms',
                         'escape' => false,
+                        'id' => 'downloadBtn'
                     ]
                 ) ?>
                 <?= $this->Html->link(
@@ -274,7 +275,7 @@
                 'id' => 'records[INDEX][NOMBRE]',
                 'label' => false,
                 'placeholder' => 'Ej: Juan Enrique...',
-                'class' => '',
+                'class' => 'NOMBRE',
                 'required' => false,
                 'minlength' => 16,
                 'style' => 'width: 100%;'
@@ -345,6 +346,7 @@
     });
 
     fileInput.addEventListener('change', function() {
+
         //El archivo que se introdujo
         const archive = fileInput.files[0]
 
@@ -356,6 +358,12 @@
         const reader = new FileReader()
         reader.onload = (event) => {
             const dataDBF = parseDBF(event.target.result)
+            //Eliminando todas las filas existentes exepto la primera antes de comenzar a cargar los datos del archivo
+            document.querySelector('tbody[id="recordsTable"]').querySelectorAll('tr.record-row').forEach((row, index) => {
+                if (index > 0) {
+                    row.remove();
+                }
+            });
             for (let i = 0; i < dataDBF.numRecords; i++) {
                 //Funcionalidad para añadir fila nueva
                 const tbody = document.querySelector('tbody[id="recordsTable"]');
@@ -392,7 +400,7 @@
                         'id' => 'records[INDEX][NOMBRE]',
                         'label' => false,
                         'placeholder' => 'Ej: Juan Enrique...',
-                        'class' => '',
+                        'class' => 'NOMBRE',
                         'required' => false,
                         'minlength' => 16,
                         'style' => 'width: 100%;'
@@ -601,6 +609,71 @@
             if(e.target.value.split('.')[1]?.length > 2) {
                 e.target.value = `${e.target.value.split('.')[0]}.${e.target.value.split('.')[1].slice(0, 2)}`
             }
+        }
+    });
+
+    //Añadir comprobacion de los datos antes de enviar el formulario
+    const form = document.getElementById('dbfForm');
+    form.addEventListener('submit', function(e) {
+        const inputsCarnet = form.querySelectorAll('input.CARNET');
+        const inputsCuenta = form.querySelectorAll('input.CUENTA');
+        const inputsImporte = form.querySelectorAll('input.IMPORTE');
+        const inputsNombre = form.querySelectorAll('input.NOMBRE');
+    
+        // Validar CARNET (requerido y 11 dígitos)
+        for (let i = 0; i < inputsCarnet.length; i++) {
+            const valor = inputsCarnet[i].value.trim();
+            if (valor === '') {
+                alert(`El carnet en la fila ${i + 1} es obligatorio.`);
+                e.preventDefault();
+                return;
+            }
+            if (valor.length !== 11) {
+                alert(`El carnet en la fila ${i + 1} debe tener exactamente 11 dígitos.`);
+                e.preventDefault();
+                return;
+            }
+        }
+    
+        // Validar CUENTA (requerido y 16 dígitos)
+        for (let i = 0; i < inputsCuenta.length; i++) {
+            const valor = inputsCuenta[i].value.trim();
+            if (valor === '') {
+                alert(`La cuenta en la fila ${i + 1} es obligatoria.`);
+                e.preventDefault();
+                return;
+            }
+            if (valor.length !== 16) {
+                alert(`La cuenta en la fila ${i + 1} debe tener exactamente 16 dígitos.`);
+                e.preventDefault();
+                return;
+            }
+        }
+    
+        // Validar IMPORTE (requerido y número válido)
+        for (let i = 0; i < inputsImporte.length; i++) {
+            const valor = inputsImporte[i].value.trim();
+            if (valor === '') {
+                alert(`El importe en la fila ${i + 1} es obligatorio.`);
+                e.preventDefault();
+                return;
+            }
+            if (isNaN(parseFloat(valor))) {
+                alert(`El importe en la fila ${i + 1} debe ser un número válido.`);
+                e.preventDefault();
+                return;
+            }
+        }
+    
+        // Validar NOMBRE (requerido, no solo espacios)
+        for (let i = 0; i < inputsNombre.length; i++) {
+            const valor = inputsNombre[i].value.trim();
+            if (valor === '') {
+                alert(`El nombre en la fila ${i + 1} es obligatorio.`);
+                e.preventDefault();
+                return;
+            }
+            // Opcional: validar longitud mínima o formato, si lo necesitas
         }
     });
 </script>
